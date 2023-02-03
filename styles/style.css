@@ -144,7 +144,7 @@ body {
   
   .individual-example-container {
     width: 80%;
-    height: 80%;
+/*     height: 80%; */
     border: 2px solid black;
     margin: 15px 5px 15px 5px;
     padding: 10px;

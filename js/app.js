@@ -110,7 +110,8 @@ const myCollection = firebase.database().ref(pathToDb);
 
 
 //Firebase Access/Control
-const renderDateToPage = function(currentVariable){ myCollection.once('value').then(function(snapshot) {
+const renderDateToPage = function(currentVariable){
+    myCollection.once('value').then(function(snapshot) {
     // currentVariable = dateToString();
     const value = snapshot.val();
     const current =  value[currentVariable]
@@ -159,6 +160,68 @@ const renderDateToPage = function(currentVariable){ myCollection.once('value').t
     })
 }
 
+//set event listener to change the data changed based upon the selector
+document.getElementById('example-select').addEventListener('change', function(){
+  const currentLanguage = document.getElementById('example-select').value;
+  pathToDb = currentLanguage;
+
+  ///Never CHANGED OG DATABASE KEY FROM TEST VALUE :-(!!!!!!!!!
+  if (pathToDb === "javascript"){
+    pathToDb = 'calendarDays'
+  }
+  
+  let myCollection2 = firebase.database().ref(pathToDb);
+  myCollection2.once('value').then(function(snapshot) {
+    // currentVariable = dateToString();
+    const value = snapshot.val();
+    console.log(value)
+    const number = ensure3Digit(daysPast)
+    console.log(number)
+    const current =  value[number]
+    console.log(current)
+    
+    //separate into necessary identities
+    const calendarDate = getDateString(daysPast)
+    const methodName = current.method;
+    const methodDescription = current.description;
+    const methodExamplesArray = current.examples;
+    let methodExamplesCodeArray = []
+    methodExamplesArray.forEach(function(element){
+      const text = methodExamplesArray.shift()
+      let lineText = text.split(";")
+      lineText.map(function(innerElement){
+          let innerText = lineText.shift()
+          lineText.push(`<code><h4>${innerText}</h4></code>`)
+      })
+      let codeBlockText = lineText.join(" ")
+      let codeBlock = `<div class="individual-example-container">
+                          <!-- Add content here -->
+                          <h5>
+                            ${codeBlockText}
+                          </h5>
+                        </div>`
+                      
+         methodExamplesArray.push(codeBlock)
+         console.log(codeBlock)
+    })
+    
+    
+    //append daily date to the page   /*NEED to dynamically add the day identifier*/
+    calendarDisplay.innerHTML = `<div class="date-container">${calendarDate}</div>
+    <div class="method-name-display">${methodName}</div>
+    <div class="method-description">
+      ${methodDescription}
+    </div>
+    <div class="method-example-container">
+      <h3 style="margin:0;padding:0;">EXAMPLE:</h3>
+        <div id="individual-exampleS-container">
+          ${methodExamplesArray[0]}
+          ${methodExamplesArray[1]}
+          ${methodExamplesArray[2]}
+        </div>
+    </div>`
+    })
+})
 
 
 
@@ -217,6 +280,10 @@ document.getElementById('leftPageArrow').addEventListener('click', function(){
 
 
 /////TEST IDEA CODE <<TO BE "DELETED" upon finalization>>
+
+
+
+
 
 
 
